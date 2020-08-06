@@ -1,0 +1,22 @@
+create function VerifyDispon (@matricule int,@dateLocation date 
+, @dateRetour date)
+returns varchar(30)
+as 
+begin 
+declare @teztez int 
+set @teztez = (select count(*) from voiture v, [Location] l where v.matricule = l.matricule and 
+@matricule= v.matricule and ((@dateLocation > l.DateLocation and @dateRetour < l.DateRetour) OR 
+(@dateLocation < l.DateLocation and @dateRetour > l.DateRetour) OR 
+(@dateLocation > l.DateLocation and @dateLocation < l.DateRetour and @dateRetour > l.DateRetour) OR
+(@dateLocation < l.DateLocation and @dateRetour > l.DateLocation and @dateRetour < l.DateRetour)))
+
+if @teztez = 0
+begin
+	return 'dispo'
+end
+	return 'not disp'
+
+end
+
+Print(dbo.VerifyDispon(1,'2022-05-2','2022-07-15'))
+
